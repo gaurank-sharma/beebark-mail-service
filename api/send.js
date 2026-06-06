@@ -2,11 +2,11 @@ const nodemailer = require('nodemailer');
 
 // Reuse one transporter across warm invocations
 // Accept both SMTP_* (the names already configured here) and EMAIL_* as fallback
-const SMTP_USER = process.env.SMTP_USER || process.env.EMAIL_USER || process.env.EMAIL_FROM;
-const SMTP_PASS = process.env.SMTP_PASS || process.env.EMAIL_PASSWORD;
-const SMTP_HOST = process.env.SMTP_HOST || process.env.EMAIL_HOST || 'smtpout.secureserver.net';
-const SMTP_PORT = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT) || 465;
-const MAIL_FROM = process.env.EMAIL_FROM || (SMTP_USER ? `"BeeBark" <${SMTP_USER}>` : 'BeeBark <info@thebeebark.com>');
+const SMTP_USER = 'info@thebeebark.com';
+const SMTP_PASS = 'CSN@23qwe@13';
+const SMTP_HOST = 'smtpout.secureserver.net';
+const SMTP_PORT = 465;
+const MAIL_FROM = BeeBark <info@thebeebark.com>');
 
 let transporter;
 const getTransporter = () => {

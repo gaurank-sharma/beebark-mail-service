@@ -6,7 +6,7 @@ const SMTP_USER = 'info@thebeebark.com';
 const SMTP_PASS = 'CSN@23qwe@13';
 const SMTP_HOST = 'smtpout.secureserver.net';
 const SMTP_PORT = 465;
-const MAIL_FROM = BeeBark <info@thebeebark.com>');
+const MAIL_FROM = '"BeeBark" <info@thebeebark.com>';
 
 let transporter;
 const getTransporter = () => {

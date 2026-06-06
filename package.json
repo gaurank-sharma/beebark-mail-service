@@ -1,0 +1,9 @@
+{
+  "name": "beebark-mail-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Authenticated SMTP relay for BeeBark (deployed on Vercel)",
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}

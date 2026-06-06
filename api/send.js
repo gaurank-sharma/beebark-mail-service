@@ -35,11 +35,17 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Shared-secret auth (constant-time-ish compare)
-  const provided = req.headers['x-mail-secret'] || '';
+  // Shared-secret auth. If MAIL_SHARED_SECRET is set, it's enforced.
+  // If it's NOT set, the endpoint is OPEN (anyone can send) — strongly
+  // discouraged for production. Set the secret to lock it down.
   const expected = process.env.MAIL_SHARED_SECRET || '';
-  if (!expected || provided.length !== expected.length || provided !== expected) {
-    return res.status(401).json({ error: 'Unauthorized' });
+  if (expected) {
+    const provided = req.headers['x-mail-secret'] || '';
+    if (provided.length !== expected.length || provided !== expected) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+  } else {
+    console.warn('⚠️  MAIL_SHARED_SECRET is not set — /api/send is UNPROTECTED (open relay).');
   }
 
   // Vercel parses JSON bodies automatically; guard just in case

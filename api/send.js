@@ -1,18 +1,21 @@
 const nodemailer = require('nodemailer');
 
 // Reuse one transporter across warm invocations
+// Accept both SMTP_* (the names already configured here) and EMAIL_* as fallback
+const SMTP_USER = process.env.SMTP_USER || process.env.EMAIL_USER || process.env.EMAIL_FROM;
+const SMTP_PASS = process.env.SMTP_PASS || process.env.EMAIL_PASSWORD;
+const SMTP_HOST = process.env.SMTP_HOST || process.env.EMAIL_HOST || 'smtpout.secureserver.net';
+const SMTP_PORT = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT) || 465;
+const MAIL_FROM = process.env.EMAIL_FROM || (SMTP_USER ? `"BeeBark" <${SMTP_USER}>` : 'BeeBark <info@thebeebark.com>');
+
 let transporter;
 const getTransporter = () => {
   if (transporter) return transporter;
-  const port = Number(process.env.EMAIL_PORT) || 465;
   transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port,
-    secure: port === 465, // SSL on 465, STARTTLS otherwise
-    auth: {
-      user: process.env.EMAIL_USER || process.env.EMAIL_FROM,
-      pass: process.env.EMAIL_PASSWORD
-    },
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_PORT === 465, // SSL on 465, STARTTLS otherwise
+    auth: { user: SMTP_USER, pass: SMTP_PASS },
     connectionTimeout: 10000,
     greetingTimeout: 8000,
     socketTimeout: 12000
@@ -61,11 +64,12 @@ module.exports = async (req, res) => {
 
   try {
     await getTransporter().sendMail({
-      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      from: MAIL_FROM,
       to,
       subject,
       html,
-      text
+      text,
+      replyTo: SMTP_USER
     });
     return res.status(200).json({ ok: true });
   } catch (err) {
